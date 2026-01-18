@@ -1,6 +1,6 @@
 # 🌾 SaveNutri — Conectando Campo e Escola
 
-> **SaaS B2G (Business to Government)** desenhado para otimizar o cumprimento da **Lei 11.947/2009 (PNAE)**, conectando **Escolas Públicas** a **Agricultores Familiares locais** por meio de **Inteligência Artificial** e **Geoprocessamento**.
+> **Otimizei a gestão da merenda escolar: substituímos processos burocráticos por uma logística inteligente que elimina o desperdício, assegura conformidade legal e garante alimentos frescos para os alunos**.
 
 ---
 
