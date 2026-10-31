@@ -1,45 +1,18 @@
-# 🌾 SaveNutri — Conectando Campo e Escola
+# SaveNutri — backend de demonstração
 
-> **Otimizei a gestão da merenda escolar: substituímos processos burocráticos por uma logística inteligente que elimina o desperdício, assegura conformidade legal e garante alimentos frescos para os alunos**.
+Protótipo FastAPI para explorar correspondência geográfica entre escolas e pontos classificados como agricultores em Teresópolis. Este repositório contém o backend; a interface fica em save-nutri-front.
 
----
+## Implementação e limites
 
-## 📋 Sobre o Projeto
+- `app/main.py` expõe grupos de rotas de nutrição, GeoJSON e correspondência.
+- `DataService` lê o GeoJSON local e mantém dados em memória. Número de alunos, orçamento, demanda e produtos são gerados aleatoriamente; `tem_dap` é fixado como verdadeiro. Esses campos são simulações, não cadastro validado, estoque real ou prova de habilitação.
+- `LocationService` usa distância geodésica; não calcula percurso rodoviário. A economia usa `max(0, 500 - dist_km * 15)`, uma fórmula demonstrativa sem calibração comprovada.
+- `AIService` solicita sugestões para segunda e terça-feira usando o modelo configurado no código e retorna menu de contingência em caso de erro. Não comprova adequação nutricional, conformidade legal, redução de desperdício ou impacto ambiental.
+- Falha ao carregar o GeoJSON é capturada e impressa; o endpoint de match acessa o primeiro resultado sem tratar lista vazia. Dados indisponíveis podem impedir o resultado; não devem ser interpretados como cálculo completo.
 
-O **SaveNutri** resolve um dos principais desafios logísticos e nutricionais enfrentados por prefeituras.  
-A legislação exige que **30% do orçamento da merenda escolar** seja destinado à agricultura familiar, porém a ausência de dados estruturados e de conexão direta entre oferta e demanda dificulta o cumprimento dessa meta.
+## Ambiente
 
-A plataforma automatiza o **match geográfico** entre escolas e produtores e utiliza **IA** para sugerir **cardápios baseados na safra local**, reduzindo custos, desperdícios e impacto ambiental.
-
----
-
-## 🚀 Principais Funcionalidades
-
-- 📍 **Matching Geoespacial**  
-  Algoritmo que calcula a distância real (geodésica) entre produtores e escolas.
-
-- 🍎 **IA Nutricionista**  
-  Integração com **GPT-3.5** para geração de cardápios semanais baseados no estoque real do agricultor.
-
-- 💰 **Cálculo de Economia Logística**  
-  Estimativa de economia financeira e ambiental com base na redução da cadeia de transporte.
-
-- 🗺️ **Visualização Enriquecida**  
-  Mapa interativo em **GeoJSON** para gestão pública, inicialmente focado em **Teresópolis/RJ**.
-
----
-
-## 🛠️ Tecnologias e Arquitetura
-
-O projeto foi construído com foco em **escalabilidade**, **manutenibilidade** e **boas práticas**, aplicando princípios de **Clean Code** e **SOLID**.
-
-- **Linguagem:** Python 3.10+
-- **Framework:** FastAPI (assíncrono e de alta performance)
-- **IA:** OpenAI API (GPT-3.5-Turbo com JSON Mode)
-- **Geoprocessamento:** Geopy (cálculo de distância real)
-- **Validação de Dados:** Pydantic
-
----
+As dependências estão em `requirements.txt` (FastAPI, Geopy, Pydantic e cliente OpenAI). O entrypoint é `app.main:app`; execute a partir da raiz para resolver o caminho do GeoJSON. A integração de IA depende de configuração própria e pode gerar chamadas pagas.
 
 ## 🗺️ Geoprocessamento (Data Acquisition)
 
@@ -66,7 +39,7 @@ A query abaixo mapeia **demanda (escolas)** e **oferta (zonas agrícolas e merca
   node["amenity"="marketplace"]({{bbox}});
 );
 out center;
-````
+```
 
 ---
 
@@ -86,32 +59,20 @@ out center;
 
 ---
 
-## 🔧 Como Executar o Projeto
+## Inicialização local
 
-1. **Clone o repositório**
-
-```bash
-git clone https://github.com/GuilhermeSerafim/save-nutri.git
-```
-
-2. **Instale as dependências**
+Prepare e ative um ambiente Python próprio. Faça o checkout e instale as dependências:
 
 ```bash
-pip install -r requirements.txt
+git clone https://github.com/GuilhermeSerafim/save-nutri-back.git
+cd save-nutri-back
+python -m pip install -r requirements.txt
 ```
 
-3. **Configure o arquivo `.env`**
-
-```env
-OPENAI_API_KEY=sua_chave_aqui
-```
-
-4. **Inicie o servidor**
+Configure `OPENAI_API_KEY` no ambiente do processo, sem versionar seu valor. A partir da raiz do repositório, inicie a API:
 
 ```bash
-uvicorn main:app --reload
+uvicorn app.main:app --reload
 ```
 
----
-
-**Desenvolvido com 💚 para transformar a alimentação escolar brasileira.**
+O carregamento dos dados depende de `data/TeresopolisEscolasELocaisDeProducao.geojson`. Mantenha esse arquivo acessível no checkout; a ausência de dados pode impedir os resultados de correspondência.
